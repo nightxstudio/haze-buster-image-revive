@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Image } from 'lucide-react';
 
 interface HeroProps {
   onOpenDialog: () => void;
@@ -15,7 +16,7 @@ const Hero = ({ onOpenDialog }: HeroProps) => {
         </h1>
         <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto text-muted-foreground">
           Our advanced AI model removes fog and haze from your images, giving them crystal clear quality.
-          Try it now with our sample images or upload your own.
+          Browse our sample images or upload your own.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button 
@@ -23,7 +24,8 @@ const Hero = ({ onOpenDialog }: HeroProps) => {
             size="lg" 
             className="font-medium"
           >
-            Try with Sample Images
+            <Image className="mr-2 h-5 w-5" />
+            Browse Sample Images
           </Button>
           <Button 
             variant="outline" 
