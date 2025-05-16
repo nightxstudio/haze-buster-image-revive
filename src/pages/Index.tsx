@@ -7,6 +7,7 @@ import ImageComparison from '@/components/ImageComparison';
 import AboutSection from '@/components/AboutSection';
 import Footer from '@/components/Footer';
 import { toast } from '@/components/ui/sonner';
+import { dehazeImage } from '@/services/dehazeService';
 
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -27,12 +28,16 @@ const Index = () => {
     setOriginalImage(imagePath);
     
     try {
-      // In a real application, this would make an API call to the Flask backend
-      // For now, we'll simulate the processing with a timeout
+      // For demo purposes, since we don't have a full Python backend yet, 
+      // we're simulating the dehaze process
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Temporary solution: Just use the same image as processed
-      // In production, this would be the response from the Flask API
+      // In a real implementation with a complete backend:
+      // 1. Convert the image path to a File object
+      // 2. Call the dehazeImage service
+      // 3. Set the processed image to the returned URL
+      
+      // For now, reuse the same image for demo purposes
       setProcessedImage(imagePath);
       
       toast.success("Image successfully dehazed!");
