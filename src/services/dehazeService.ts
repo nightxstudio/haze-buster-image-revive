@@ -51,15 +51,47 @@ export const dehazeImage = async (imageFile: File): Promise<DehazeResult> => {
       };
     }
 
-    // In the current implementation, we're just returning the same image
-    // In a real implementation, the edge function would return the path to the processed image
+    // Return the processed image URL
     return {
       success: true,
-      imageUrl: urlData.publicUrl,
+      imageUrl: data.processedImageUrl,
       message: data.message
     };
   } catch (error) {
     console.error("Error in dehazeImage service:", error);
+    return {
+      success: false,
+      error: "An unexpected error occurred"
+    };
+  }
+};
+
+// Function to handle processing of sample images
+export const processSampleImage = async (imagePath: string): Promise<DehazeResult> => {
+  try {
+    // Call the dehaze edge function with the path of the sample image
+    const { data, error } = await supabase.functions.invoke('dehaze', {
+      body: JSON.stringify({ 
+        imagePath: imagePath.replace(/^\/images\//, '') // Remove the /images/ prefix if present
+      }),
+    });
+
+    if (error) {
+      console.error("Error calling dehaze function:", error);
+      return {
+        success: false,
+        error: "Failed to process image"
+      };
+    }
+
+    // Return the processed image URL
+    return {
+      success: true,
+      imageUrl: data.processedImageUrl,
+      message: data.message
+    };
+  } catch (error) {
+    console.error("Error in processSampleImage service:", error);
     return {
       success: false,
       error: "An unexpected error occurred"

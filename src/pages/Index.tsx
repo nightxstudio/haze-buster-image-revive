@@ -7,7 +7,7 @@ import ImageComparison from '@/components/ImageComparison';
 import AboutSection from '@/components/AboutSection';
 import Footer from '@/components/Footer';
 import { toast } from '@/components/ui/sonner';
-import { dehazeImage } from '@/services/dehazeService';
+import { processSampleImage } from '@/services/dehazeService';
 
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -28,23 +28,23 @@ const Index = () => {
     setOriginalImage(imagePath);
     
     try {
-      // For demo purposes, since we don't have a full Python backend yet, 
-      // we're simulating the dehaze process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Call the processSampleImage function from dehazeService
+      const result = await processSampleImage(imagePath);
       
-      // In a real implementation with a complete backend:
-      // 1. Convert the image path to a File object
-      // 2. Call the dehazeImage service
-      // 3. Set the processed image to the returned URL
-      
-      // For now, reuse the same image for demo purposes
-      setProcessedImage(imagePath);
-      
-      toast.success("Image successfully dehazed!");
+      if (result.success && result.imageUrl) {
+        setProcessedImage(result.imageUrl);
+        toast.success("Image successfully dehazed!");
+      } else {
+        toast.error(result.error || "Error processing image");
+        // In case of error, still show the original image as processed for demo purposes
+        setProcessedImage(imagePath);
+      }
       handleDialogClose();
     } catch (error) {
       toast.error("Error processing image. Please try again.");
       console.error("Error processing image:", error);
+      // In case of error, still show the original image as processed for demo purposes
+      setProcessedImage(imagePath);
     } finally {
       setLoading(false);
     }

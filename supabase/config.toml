@@ -1,1 +1,5 @@
+
 project_id = "gljroyqzqbpvekftkpat"
+
+[functions.dehaze]
+verify_jwt = false
