@@ -69,10 +69,12 @@ export const dehazeImage = async (imageFile: File): Promise<DehazeResult> => {
 // Function to handle processing of sample images
 export const processSampleImage = async (imagePath: string): Promise<DehazeResult> => {
   try {
-    // Call the dehaze edge function with the path of the sample image
+    console.log("Processing sample image:", imagePath);
+    
+    // Call the dehaze edge function with the full path of the sample image
     const { data, error } = await supabase.functions.invoke('dehaze', {
       body: JSON.stringify({ 
-        imagePath: imagePath.replace(/^\/images\//, '') // Remove the /images/ prefix if present
+        imagePath: imagePath
       }),
     });
 

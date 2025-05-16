@@ -22,34 +22,65 @@ serve(async (req) => {
       throw new Error("Image path is required");
     }
 
+    console.log("Processing image path:", imagePath);
+
     // Create supabase client with service role key for admin access
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // For now, simulate model processing with a delay
-    // In a production environment, this is where we would:
-    // 1. Download the image from the 'images' bucket
-    // 2. Call an external ML service API that runs the Keras model
-    // 3. Upload the processed image back to Supabase storage
-    // 4. Return the URL of the processed image
+    // Check if 'images' bucket exists, if not create it
+    const { data: buckets, error: bucketError } = await supabase.storage.listBuckets();
+    if (bucketError) {
+      console.error("Error listing buckets:", bucketError);
+    }
     
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // For the demo, we'll create a "dehazed" version by just copying the same image
-    // to a different location with a "dehazed_" prefix
+    const imagesBucketExists = buckets?.some(bucket => bucket.name === 'images');
+    if (!imagesBucketExists) {
+      const { error: createBucketError } = await supabase.storage.createBucket('images', {
+        public: true
+      });
+      if (createBucketError) {
+        console.error("Error creating 'images' bucket:", createBucketError);
+        throw new Error(`Error creating 'images' bucket: ${createBucketError.message}`);
+      }
+      console.log("Created 'images' bucket");
+    }
+
+    // For now, we'll create a "dehazed" version by copying the same image
+    // since actual model inference would require a more complex setup
     const originalPath = imagePath;
     const dehazedPath = `dehazed_${originalPath.split("/").pop()}`;
     
-    // Download the original image
-    const { data: fileData, error: downloadError } = await supabase.storage
-      .from('images')
-      .download(originalPath);
+    console.log("Original path:", originalPath);
+    console.log("Dehazed path:", dehazedPath);
+
+    let fileData;
+    // Check if the image path is a public URL or a storage path
+    if (originalPath.startsWith('http')) {
+      // Download image from URL
+      const response = await fetch(originalPath);
+      if (!response.ok) {
+        throw new Error(`Error downloading image from URL: ${response.statusText}`);
+      }
+      fileData = await response.arrayBuffer();
+    } else {
+      // Download the original image from storage
+      const { data, error: downloadError } = await supabase.storage
+        .from('images')
+        .download(originalPath.replace(/^\/images\//, ''));
       
-    if (downloadError) {
-      throw new Error(`Error downloading image: ${downloadError.message}`);
+      if (downloadError) {
+        console.error("Error downloading image:", downloadError);
+        throw new Error(`Error downloading image: ${downloadError.message}`);
+      }
+      fileData = data;
+    }
+    
+    if (!fileData) {
+      throw new Error("Failed to retrieve image data");
     }
     
     // Upload the same image as the "dehazed" version
-    // In a real implementation, we would process the image before uploading
+    // In a real implementation, we would process the image here
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('images')
       .upload(dehazedPath, fileData, {
@@ -58,6 +89,7 @@ serve(async (req) => {
       });
       
     if (uploadError) {
+      console.error("Error uploading processed image:", uploadError);
       throw new Error(`Error uploading processed image: ${uploadError.message}`);
     }
     
@@ -65,6 +97,8 @@ serve(async (req) => {
     const { data: urlData } = await supabase.storage
       .from('images')
       .getPublicUrl(dehazedPath);
+    
+    console.log("Successfully processed image:", urlData?.publicUrl);
     
     return new Response(
       JSON.stringify({
