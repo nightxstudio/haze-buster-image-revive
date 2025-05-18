@@ -1,6 +1,4 @@
 
-import { supabase } from "@/integrations/supabase/client";
-
 export interface DehazeResult {
   success: boolean;
   message?: string;
@@ -8,54 +6,38 @@ export interface DehazeResult {
   error?: string;
 }
 
+// Backend URL - make sure this matches your Python backend deployment
+const BACKEND_URL = "http://localhost:8000"; 
+
 export const dehazeImage = async (imageFile: File): Promise<DehazeResult> => {
   try {
-    // Step 1: Upload the image to Supabase Storage
-    const fileName = `${Date.now()}_${imageFile.name}`;
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from('images')
-      .upload(fileName, imageFile);
+    // Create form data to send the image file
+    const formData = new FormData();
+    formData.append('file', imageFile);
 
-    if (uploadError) {
-      console.error("Error uploading image:", uploadError);
-      return {
-        success: false,
-        error: "Failed to upload image"
-      };
-    }
-
-    // Step 2: Get the uploaded image path
-    const { data: urlData } = await supabase.storage
-      .from('images')
-      .getPublicUrl(fileName);
-
-    if (!urlData?.publicUrl) {
-      return {
-        success: false,
-        error: "Could not get uploaded image URL"
-      };
-    }
-
-    // Step 3: Call the dehaze edge function
-    const { data, error } = await supabase.functions.invoke('dehaze', {
-      body: JSON.stringify({ 
-        imagePath: fileName
-      }),
+    // Call the Python backend dehaze endpoint
+    const response = await fetch(`${BACKEND_URL}/dehaze`, {
+      method: 'POST',
+      body: formData,
     });
 
-    if (error) {
-      console.error("Error calling dehaze function:", error);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
+      console.error("Error from backend:", errorData);
       return {
         success: false,
-        error: "Failed to process image"
+        error: errorData.detail || "Failed to process image"
       };
     }
 
-    // Return the processed image URL
+    // Get the image directly as blob from the response
+    const imageBlob = await response.blob();
+    const imageUrl = URL.createObjectURL(imageBlob);
+
     return {
       success: true,
-      imageUrl: data.processedImageUrl,
-      message: data.message
+      imageUrl,
+      message: "Image successfully dehazed"
     };
   } catch (error) {
     console.error("Error in dehazeImage service:", error);
@@ -71,27 +53,24 @@ export const processSampleImage = async (imagePath: string): Promise<DehazeResul
   try {
     console.log("Processing sample image:", imagePath);
     
-    // Call the dehaze edge function with the full path of the sample image
-    const { data, error } = await supabase.functions.invoke('dehaze', {
-      body: JSON.stringify({ 
-        imagePath: imagePath
-      }),
-    });
-
-    if (error) {
-      console.error("Error calling dehaze function:", error);
+    // Fetch the sample image first 
+    const imageResponse = await fetch(imagePath);
+    if (!imageResponse.ok) {
       return {
         success: false,
-        error: "Failed to process image"
+        error: "Failed to fetch the sample image"
       };
     }
-
-    // Return the processed image URL
-    return {
-      success: true,
-      imageUrl: data.processedImageUrl,
-      message: data.message
-    };
+    
+    const imageBlob = await imageResponse.blob();
+    
+    // Create a File object from the blob
+    const imageFile = new File([imageBlob], imagePath.split('/').pop() || 'sample.jpg', { 
+      type: imageBlob.type 
+    });
+    
+    // Use the same dehazeImage function to process the sample
+    return await dehazeImage(imageFile);
   } catch (error) {
     console.error("Error in processSampleImage service:", error);
     return {

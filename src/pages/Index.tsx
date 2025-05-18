@@ -7,7 +7,7 @@ import ImageComparison from '@/components/ImageComparison';
 import AboutSection from '@/components/AboutSection';
 import Footer from '@/components/Footer';
 import { toast } from '@/components/ui/sonner';
-import { processSampleImage } from '@/services/dehazeService';
+import { processSampleImage, dehazeImage } from '@/services/dehazeService';
 
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -36,15 +36,40 @@ const Index = () => {
         toast.success("Image successfully dehazed!");
       } else {
         toast.error(result.error || "Error processing image");
-        // In case of error, still show the original image as processed for demo purposes
-        setProcessedImage(imagePath);
+        setProcessedImage(null);
       }
       handleDialogClose();
     } catch (error) {
       toast.error("Error processing image. Please try again.");
       console.error("Error processing image:", error);
-      // In case of error, still show the original image as processed for demo purposes
-      setProcessedImage(imagePath);
+      setProcessedImage(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFileUpload = async (file: File) => {
+    setLoading(true);
+    
+    // Create object URL for the original image preview
+    const originalUrl = URL.createObjectURL(file);
+    setOriginalImage(originalUrl);
+    
+    try {
+      // Process the uploaded file
+      const result = await dehazeImage(file);
+      
+      if (result.success && result.imageUrl) {
+        setProcessedImage(result.imageUrl);
+        toast.success("Image successfully dehazed!");
+      } else {
+        toast.error(result.error || "Error processing image");
+        setProcessedImage(null);
+      }
+    } catch (error) {
+      toast.error("Error processing image. Please try again.");
+      console.error("Error processing uploaded file:", error);
+      setProcessedImage(null);
     } finally {
       setLoading(false);
     }
@@ -55,7 +80,10 @@ const Index = () => {
       <Header />
       
       <main className="flex-grow">
-        <Hero onOpenDialog={handleDialogOpen} />
+        <Hero 
+          onOpenDialog={handleDialogOpen}
+          onFileUpload={handleFileUpload}
+        />
         
         <ImageSelector 
           isOpen={isDialogOpen}

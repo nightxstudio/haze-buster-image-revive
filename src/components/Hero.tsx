@@ -1,13 +1,21 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Image } from 'lucide-react';
+import { Image, Upload } from 'lucide-react';
 
 interface HeroProps {
   onOpenDialog: () => void;
+  onFileUpload?: (file: File) => void;
 }
 
-const Hero = ({ onOpenDialog }: HeroProps) => {
+const Hero = ({ onOpenDialog, onFileUpload }: HeroProps) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files[0] && onFileUpload) {
+      onFileUpload(files[0]);
+    }
+  };
+
   return (
     <section className="py-20 px-4">
       <div className="container mx-auto text-center">
@@ -30,11 +38,18 @@ const Hero = ({ onOpenDialog }: HeroProps) => {
           <Button 
             variant="outline" 
             size="lg"
-            className="font-medium"
-            disabled
+            className="font-medium relative overflow-hidden"
+            onClick={() => document.getElementById('file-upload')?.click()}
           >
+            <Upload className="mr-2 h-5 w-5" />
             Upload Your Own Image
-            <span className="text-xs ml-2">(Coming Soon)</span>
+            <input
+              id="file-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="absolute inset-0 opacity-0 cursor-pointer"
+            />
           </Button>
         </div>
       </div>
