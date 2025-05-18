@@ -6,8 +6,8 @@ export interface DehazeResult {
   error?: string;
 }
 
-// Backend URL - make sure this matches your Python backend deployment
-const BACKEND_URL = "http://localhost:8000"; 
+// Backend URL - updated to point to Render deployment
+const BACKEND_URL = "https://haze-buster-image-revive.onrender.com";
 
 export const dehazeImage = async (imageFile: File): Promise<DehazeResult> => {
   try {
