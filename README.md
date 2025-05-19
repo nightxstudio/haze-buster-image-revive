@@ -8,9 +8,8 @@
 - 🖼️ 50+ Sample Hazy Images to test instantly
 - 📤 Drag-and-Drop Upload Support
 - ⚡ FastAPI Inference Backend
-- 💾 Optional Supabase Storage Integration
-- 🌐 Frontend powered by **Next.js** and **Tailwind CSS**
-- 🚀 Ready for cloud deployment on Vercel, Railway, Render, or Heroku
+- 🌐 Frontend powered by **React** and **Tailwind CSS**
+- 🚀 Ready for cloud deployment on Vercel & Render
 
 
 ## 📦 Tech Stack
@@ -20,7 +19,8 @@
 | Frontend      | React, Tailwind CSS          |
 | Backend API   | FastAPI, Python, TensorFlow  |
 | Model         | AOD-Net (Refined Keras)      |
-| Deployment    | Vercel + Render              |
+| Frontend Deployment   | Vercel              |
+| Backend Deployment    | Render               |
 
 ## 📈 Roadmap
 - Core dehazing with AOD-Net
