@@ -29,8 +29,6 @@
 
 - Before/After slider view
 
-- User auth + image history (via Supabase)
-
 - Mobile-first UI & offline support
 
 ## 🤝 Contributions
