@@ -1,73 +1,40 @@
-# Welcome to your Lovable project
+# 🌫️ Haze Buster: Image Revive
 
-## Project info
+**Haze Buster: Image Revive** is a full-stack AI web application that restores clarity to hazy images using a deep learning-based dehazing model. Upload a hazy photo or choose from 50+ built-in samples to see the magic of AI-driven enhancement in action.
 
-**URL**: https://lovable.dev/projects/3fa24d70-7667-4cfe-b6f7-5f5ace60bb6e
+## ✨ Features
 
-## How can I edit this code?
+- 🔍 AI-Powered Haze Removal using refined **AOD-Net (Keras)**
+- 🖼️ 50+ Sample Hazy Images to test instantly
+- 📤 Drag-and-Drop Upload Support
+- ⚡ FastAPI Inference Backend
+- 💾 Optional Supabase Storage Integration
+- 🌐 Frontend powered by **Next.js** and **Tailwind CSS**
+- 🚀 Ready for cloud deployment on Vercel, Railway, Render, or Heroku
 
-There are several ways of editing your application.
 
-**Use Lovable**
+## 📦 Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/3fa24d70-7667-4cfe-b6f7-5f5ace60bb6e) and start prompting.
+| Layer         | Technology                   |
+|---------------|------------------------------|
+| Frontend      | React, Tailwind CSS          |
+| Backend API   | FastAPI, Python, TensorFlow  |
+| Model         | AOD-Net (Refined Keras)      |
+| Deployment    | Vercel + Render              |
 
-Changes made via Lovable will be committed automatically to this repo.
+## 📈 Roadmap
+- Core dehazing with AOD-Net
 
-**Use your preferred IDE**
+- Image upload & sample gallery
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Before/After slider view
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- User auth + image history (via Supabase)
 
-Follow these steps:
+- Mobile-first UI & offline support
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/3fa24d70-7667-4cfe-b6f7-5f5ace60bb6e) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 🤝 Contributions
+- Sai Pritam Panda
+- Debi Prasad Mohakud
+- Prabhat Sharma
+- Hrishikesh Swain
