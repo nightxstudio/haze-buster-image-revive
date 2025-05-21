@@ -30,7 +30,7 @@ const ImageComparison = ({ originalImage, processedImage }: ImageComparisonProps
               <img 
                 src={originalImage} 
                 alt="Original hazy image" 
-                className="w-full h-full object-cover rounded-md"
+                className="max-w-full h-auto object-contain rounded-md"
               />
             </div>
             <p className="text-center mt-3 font-medium">Original Image</p>
@@ -43,7 +43,7 @@ const ImageComparison = ({ originalImage, processedImage }: ImageComparisonProps
               <img 
                 src={processedImage} 
                 alt="Dehazed image" 
-                className="w-full h-full object-cover rounded-md"
+                className="max-w-full h-auto object-contain rounded-md"
               />
             </div>
             <p className="text-center mt-3 font-medium">Dehazed Image</p>
