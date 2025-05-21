@@ -21,23 +21,34 @@ model = tf.keras.models.load_model("aod_net_refined.keras")
 
 def preprocess(image_bytes):
     img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+    original_size = img.size  # (width, height)
     img = img.resize((256, 256))
     img_array = np.array(img).astype("float32") / 255.0
-    return np.expand_dims(img_array, axis=0)
+    return np.expand_dims(img_array, axis=0), original_size
 
-def postprocess(output):
+def postprocess(output, original_size):
     output_img = (output[0] * 255).astype("uint8")
-    return Image.fromarray(output_img)
+    img = Image.fromarray(output_img)
+    img = img.resize(original_size, resample=Image.BICUBIC)
+    return img
 
 @app.post("/dehaze")
 async def dehaze(file: UploadFile = File(...)):
     image_bytes = await file.read()
-    input_tensor = preprocess(image_bytes)
+    
+    # Preprocess and get original size
+    input_tensor, original_size = preprocess(image_bytes)
+    
+    # Predict
     output = model.predict(input_tensor)
-    result_image = postprocess(output)
+    
+    # Postprocess and resize back to original
+    result_image = postprocess(output, original_size)
 
+    # Send back image as response
     buffer = io.BytesIO()
     result_image.save(buffer, format="PNG")
     buffer.seek(0)
 
     return StreamingResponse(buffer, media_type="image/png")
+
