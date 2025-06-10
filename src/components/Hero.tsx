@@ -35,24 +35,6 @@ const Hero = ({ onOpenDialog, onFileUpload }: HeroProps) => {
             <Image className="mr-2 h-5 w-5" />
             Browse Sample Images
           </Button>
-          <!--
-          <Button 
-            variant="outline" 
-            size="lg"
-            className="font-medium relative overflow-hidden"
-            onClick={() => document.getElementById('file-upload')?.click()}
-          >
-            <Upload className="mr-2 h-5 w-5" />
-            Upload Your Own Image
-            <input
-              id="file-upload"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="absolute inset-0 opacity-0 cursor-pointer"
-            />
-          </Button>
-            -->
         </div>
       </div>
     </section>
