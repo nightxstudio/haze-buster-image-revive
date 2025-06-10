@@ -35,6 +35,7 @@ const Hero = ({ onOpenDialog, onFileUpload }: HeroProps) => {
             <Image className="mr-2 h-5 w-5" />
             Browse Sample Images
           </Button>
+          <!--
           <Button 
             variant="outline" 
             size="lg"
@@ -51,6 +52,7 @@ const Hero = ({ onOpenDialog, onFileUpload }: HeroProps) => {
               className="absolute inset-0 opacity-0 cursor-pointer"
             />
           </Button>
+            -->
         </div>
       </div>
     </section>
